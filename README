@@ -1,0 +1,5 @@
+This program is mainly for practicing working with multidimensional arrays,
+char arrays and int to char conversion and vice-versa. At some point I'm
+looking to make some functions that will take parts of the array as inputs for
+data analysis. A searching algorithm will also need to be implemented for
+this.
