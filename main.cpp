@@ -13,14 +13,14 @@ void deliverWeekday(char*);
 
 int charArrayToInt(char*,int);
 
-void intToCharArray(int,int);
+void intToCharArray(int,int,char*);
 
 int main(){
 	
 	const int DAYS_IN_WEEK = 7,
 			DAYS_IN_YEAR = 365,
-					YEARS = 3,
-			WEEKS_PER_YEAR = 52;
+					 YEARS = 3,
+		   WEEKS_PER_YEAR = 52;
 					
 	const int DATE_REP_LENGTH = 8; //Indicates size of each char array that together represents a specific date (ddmmyyyy)
 	
@@ -44,74 +44,88 @@ int main(){
 	deliverWeekday(wdPtr);
 	int wdInt = static_cast<int>(wdChar) - 48;
 
-	char targetArr[6];
-	int	myNumAsInt = 80016;
-	
-	intToCharArray(myNumAsInt,5,targetArr)
-	
-	std::cout << targetArr << std::endl;
-	
 	bool leapYearFlag;
 	int daysInThisMonth;
 	
+	//Char arrays for converting year, month, and day ints
+	char currentYearChars[4],
+		 currentMonthChars[2],
+		   currentDayChars[2];
 	
-	// for(int y = 0;y<YEARS;y++){
-//
-// 		currentYearInt++;
-//
-// 		//Checking if current year is a leap year
-// 		(currentYearInt%4) ? (leapYearFlag = 0) : (leapYearFlag = 1);
-//
-// 		for(int m = 0;m<12;m++){
-//
-// 			currentMonthInt++;
-//
-// 			//Reset month counter for every year
-// 			if(currentMonthInt>12)
-// 				currentMonthInt=1;
-//
-// 			//Number of days in month varies
-// 			if(currentMonthInt<7){
-// 				//Odd-numbered months before July have 31 days
-//
-// 				//Special case for February with leap year
-// 				if(currentMonthInt==2)
-// 					(leapYearFlag) ? (daysInThisMonth = 29) : (daysInThisMonth = 28);
-//
-// 				if(currentMonthInt%2)
-// 					daysInThisMonth = 31;
-// 				else
-// 					daysInThisMonth = 30;
-//
-// 			}
-// 			else{
-// 				//Odd-numbered months after June have 30 days
-//
-// 				if(currentMonthInt%2)
-// 					daysInThisMonth = 30;
-// 				else
-// 					daysInThisMonth = 31;
-// 			}
-//
-// 			for(int d = 0;d<daysInThisMonth;d++){
-//
-// 				while(wdInt<7){
-//					//
-// 					arrayOfWeeks[y][wdInt][0]={static_cast<char>}
-//
-//
-//					wdInt++;
-//
-// 				}
-// 				wdInt=0;
-//
-//
-//
-// 			}
-//
-// 		}
-//
-// 	}
+	int y = currentYearInt;
+	int m = currentMonthInt;
+	int d = currentDayInt;
+	
+	int weekNumber = 0;
+	
+	intToCharArray(y,4,currentYearChars);
+	std::cout << std::endl;
+	std::cout.put(currentYearChars[3]);
+	std::cout << std::endl;
+	
+	for(;y <= (currentYearInt + YEARS);y++){
+
+		//Checking if year is a leap year
+		(y%4) ? (leapYearFlag = 0) : (leapYearFlag = 1);
+		
+		//Reset the month counter
+		if(m==13)
+			m=1;
+
+		while(m<=12){
+
+			//Number of days in month varies
+			if(m<7){
+				//Odd-numbered months before July have 31 days
+
+				//Special case for February with leap year
+				if(m==2)
+					(leapYearFlag) ? (daysInThisMonth = 29) : (daysInThisMonth = 28);
+
+				if(m%2)
+					daysInThisMonth = 31;
+				else
+					daysInThisMonth = 30;
+
+			}
+			else{
+				//Odd-numbered months after June have 30 days
+				if(m%2)
+					daysInThisMonth = 30;
+				else
+					daysInThisMonth = 31;
+			}
+
+			for(;d<=daysInThisMonth;d++){
+
+
+				intToCharArray(d,2,&arrayOfWeeks[weekNumber][wdInt][0]);
+				intToCharArray(m,2,&arrayOfWeeks[weekNumber][wdInt][2]);
+				intToCharArray(y,4,&arrayOfWeeks[weekNumber][wdInt][4]);
+
+				wdInt++;
+				
+				//Reset after Sunday (wdInt=6)
+				if(wdInt==7)
+				{
+					weekNumber++;
+					wdInt=0;
+				}
+
+			}
+			
+			//Reset day counter after exiting loop
+			d=1;
+			m++;
+
+		}
+
+	}
+
+	// for(int n = 0;n<8;n++){
+	// 	std::cout << std::endl;
+	// 	std::cout.put(arrayOfWeeks[6][4][n]);
+	// }
 	
 	return 0;
 }
@@ -167,9 +181,6 @@ void intToCharArray(int myInt, int digits, char* target){
 	//Placeholder for single integer digit as char
 	char intAsChar;
 	
-	//Dynamically allocated character array
-	char* convertedCharArr = new char[digits+1];
-	
 	int magnitude;
 	
 	for(int n=0;n<digits;n++){
@@ -187,13 +198,9 @@ void intToCharArray(int myInt, int digits, char* target){
 		myIntConverted+=48;
 		intAsChar = static_cast<char>(myIntConverted);
 		
-		convertedCharArr[n] = intAsChar;
+		//Store char at current decimal place of target
+		target[n] = intAsChar;
 		
 	}
-	convertedCharArr[digits] = NULL;
-	
-	strcpy(target,convertedCharArr);
-	
-	delete[] convertedCharArr;
 	
 }
