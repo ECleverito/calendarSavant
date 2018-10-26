@@ -2,6 +2,7 @@
 #include <chrono> //Library with functions for obtaining current date. Only available with C++11
 #include <iomanip> //Library with function for converting time_t to various other var types
 #include <string>
+#include <math.h>
 
 //Function for storing date in a character array
 //Array must be 9 bytes long because there must be an extra byte at end to store null terminator
@@ -11,6 +12,8 @@ void deliverDate(char*);
 void deliverWeekday(char*);
 
 int charArrayToInt(char*,int);
+
+void intToCharArray(int,int);
 
 int main(){
 	
@@ -40,11 +43,17 @@ int main(){
 	char* wdPtr = &wdChar;
 	deliverWeekday(wdPtr);
 	int wdInt = static_cast<int>(wdChar) - 48;
+
+	char targetArr[6];
+	int	myNumAsInt = 80016;
 	
-	std::cout << wdInt << std::endl;
+	intToCharArray(myNumAsInt,5,targetArr)
+	
+	std::cout << targetArr << std::endl;
 	
 	bool leapYearFlag;
 	int daysInThisMonth;
+	
 	
 	// for(int y = 0;y<YEARS;y++){
 //
@@ -86,12 +95,15 @@ int main(){
 //
 // 			for(int d = 0;d<daysInThisMonth;d++){
 //
-// 				for(;wd<7;wd++){
+// 				while(wdInt<7){
+//					//
+// 					arrayOfWeeks[y][wdInt][0]={static_cast<char>}
 //
-// 					arrayOfWeeks[y][wd][0]={static_cast<char>}
+//
+//					wdInt++;
 //
 // 				}
-// 				wd=0;
+// 				wdInt=0;
 //
 //
 //
@@ -145,5 +157,43 @@ int charArrayToInt(char* charArray,int size){
 	}
 
 	return convertedInt;
+	
+}
+
+void intToCharArray(int myInt, int digits, char* target){
+	
+	//Placeholder for int while being convereted
+	int myIntConverted;
+	//Placeholder for single integer digit as char
+	char intAsChar;
+	
+	//Dynamically allocated character array
+	char* convertedCharArr = new char[digits+1];
+	
+	int magnitude;
+	
+	for(int n=0;n<digits;n++){
+		
+		//Reset original int
+		myIntConverted = myInt;
+		
+		//Adjust magnitude
+		magnitude = pow(10,(digits-n-1));
+		
+		//Isolate each digit by magnitude
+		myIntConverted = (myIntConverted/magnitude)%10;	
+		
+		//Convert digit to ASCII value then char
+		myIntConverted+=48;
+		intAsChar = static_cast<char>(myIntConverted);
+		
+		convertedCharArr[n] = intAsChar;
+		
+	}
+	convertedCharArr[digits] = NULL;
+	
+	strcpy(target,convertedCharArr);
+	
+	delete[] convertedCharArr;
 	
 }
